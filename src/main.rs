@@ -1,4 +1,3 @@
-use std::string;
 
 #[derive(Debug)]
 pub enum FuelType {
@@ -38,7 +37,7 @@ pub struct Engine {
     pub fuel_level: f64, // fuel_level in % 0.0%->100.0%
 }
 impl Engine {
-    pub fn new(c: u8, max_r: f64, max_h: f64, max_t: f64, eng_s: f64, fuel: String) -> Result<Engine, EngineError>{
+    pub fn new(idle_rpm: f64, rpm_at_max_torque: f64, max_rpm: f64, max_torque: f64, eng_s: f64, c: u8, fuel: String) -> Result<Engine, EngineError>{
         let f_t = match fuel.as_str() {
             "gasoline" => FuelType::Gasoline,
             "diesel"   => FuelType::Diesel,
@@ -48,13 +47,13 @@ impl Engine {
         Ok(Engine { 
         displacement: eng_s,
         cylinders: c,
-        comp_ratio: 1.0,
+        comp_ratio: 10.0,
         fuel_type: f_t,
-        max_rpm: max_r,
-        idle_rpm: 0.0,
+        max_rpm,
+        idle_rpm,
         current_rpm: 0.0,
-        max_hp: max_h,
-        max_torque: max_t,
+        max_hp,
+        max_torque,
         torque_curve: Vec::new(),
         running: false,
         throtle: 0.0,
@@ -64,7 +63,7 @@ impl Engine {
 }
 fn main() {
     // Creating an engine.
-    match Engine::new(4, 5000.0, 100.0, 200.0, 3.0, "gasoline".to_string()) {
+    match Engine::new(300.0, 5000.0, 6500.0, 300.0, 3.0, 3, "gasoline".to_string()) {
         Ok(engine) => println!("Created an engine: {:?}", engine),
         Err(e)     => println!("Error while creating an engine: {}", e),
     }
